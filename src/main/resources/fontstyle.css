@@ -1,0 +1,28 @@
+@font-face {
+    src: url('fonts/Minecraft.ttf');
+}
+
+.rootM {
+    -fx-font-family: 'Minecraftia';
+    -fx-font-size: 12;
+}
+
+.menu-bar{
+    -fx-font-family: 'Minecraftia';
+    -fx-font-size: 11;
+}
+
+.text-area{
+    -fx-font-family: 'Minecraftia';
+    -fx-font-size: 9;
+}
+
+.label{
+    -fx-font-family: 'Minecraftia';
+    -fx-font-size: 10;
+}
+
+.root{
+    -fx-font-family: 'Minecraftia';
+    -fx-font-size: 10;
+}
