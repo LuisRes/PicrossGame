@@ -1,5 +1,7 @@
 package picross;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -11,6 +13,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.stage.*;
+import javafx.util.Duration;
 
 /**
  * View class for initializing the game's interface and... IDK
@@ -40,11 +43,6 @@ public class View extends Application {
         thaModel = ANOTHERMODEL;
         thaController = new Controller(this, thaModel);
     }
-
-    /**
-     * Private int for displaying the time
-     */
-    private int time=0;
 
     /**
      * Private label for displaying the time
@@ -134,6 +132,10 @@ public class View extends Application {
     //Exit Menu
     MenuItem close;
 
+    private Timeline timer;
+
+    private int currentTime = 0;
+
     /*-----------------METHODS--------------*/
 
     /**
@@ -153,20 +155,25 @@ public class View extends Application {
     }
 
     /**
-     * Method for getting the time
-     * @return time
-     */
-    public int getTime(){
-        return time;
-    }
-
-    /**
      * Method for setting the time
      * @param nTime new time
      */
     public void setTime(int nTime){
-        time = nTime;
-        timerLabel.setText("\t" + Model.timeTag + getTime());
+        thaModel.time = nTime;
+    }
+
+
+    /**
+     * Method to initialize and start the timer.
+     */
+    private void startTimer() {
+        timer = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+            // Code to update the UI every second
+            currentTime++;
+            timerLabel.setText("\t" + Model.timeTag + currentTime);
+        }));
+        timer.setCycleCount(Timeline.INDEFINITE);
+        timer.play();
     }
 
     /**
@@ -464,6 +471,7 @@ public class View extends Application {
     public void updateBoard(boolean random){
         if(thaModel.isRequiresUpdate()){
             thaModel.updateSolution(random);
+            thaModel.resetTime();
         }
         HBox gridBox = new HBox();
         grid = new GridPane();
@@ -575,7 +583,7 @@ public class View extends Application {
         logArea.setWrapText(true);
         resetButton.setOnAction(e -> thaController.handleReset(butArray, logArea));
 
-        timerLabel = new Label("\t" + Model.timeTag + time);
+        timerLabel = new Label();
         timerLabel.setId("Timer");
         timerLabel.setBackground(new Background(new BackgroundImage(Model.MCLabel, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER, BackgroundSize.DEFAULT)));
         timerLabel.setPrefSize(Model.MCLabel.getWidth(), Model.MCLabel.getHeight());
@@ -611,6 +619,8 @@ public class View extends Application {
         primaryStage.setScene(scene);
         //CSS styling for custom MINECRAFT font and adjusting sizes for different components
         scene.getStylesheets().add("fontstyle.css");
+
+        startTimer();
         //Final settings for stage and showing
         primaryStage.setResizable(false);
         primaryStage.sizeToScene();

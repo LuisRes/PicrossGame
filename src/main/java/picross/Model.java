@@ -413,6 +413,8 @@ public class Model {
 
     private boolean requiresUpdate = true;
 
+    protected int time;
+
     /**
      * Private boolean[][] for storing the solution
      */
@@ -496,6 +498,7 @@ public class Model {
      */
     public void newGame(boolean random){
         setRequiresUpdate(true);
+        resetScore();
         anotherView.updateBoard(random);
     }
 
@@ -558,7 +561,7 @@ public class Model {
         Random r = new Random();
         int ranDim = r.nextInt(9) + 2;
         setDimension(ranDim);
-        System.out.println(getDimension());
+        //System.out.println(getDimension());
         boolean[][] solution = new boolean[getDimension()][getDimension()];
         int ranCell;
         boolean cell;
@@ -574,6 +577,7 @@ public class Model {
                 solution[i][j] = cell;
             }
         }
+        setRequiresUpdate(false);
         currentSolution = solution;
     }
 
@@ -581,7 +585,7 @@ public class Model {
      * Method for loading game from local machine using a txt file with custom solution
      */
     public void loadGame(){
-        //Reseting points for loaded game
+        //Resting points for loaded game
         maxPoints = 0;
         // Create a file chooser dialog
         FileChooser fileChooser = new FileChooser();
@@ -639,6 +643,7 @@ public class Model {
             }
             row++;
         }
+        setRequiresUpdate(false);
         currentSolution = solution;
     }
 

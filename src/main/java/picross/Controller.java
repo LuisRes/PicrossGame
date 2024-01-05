@@ -1,7 +1,6 @@
 package picross;
 
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -10,18 +9,14 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.EventListener;
-
-import static java.lang.Thread.sleep;
+import java.io.PrintWriter;;
 
 /**
  * Class for game's controller
- * NOTE: This is not a DUALSHOCK 4 wireless PS4 controller
+ * NOTE: This is not a DUAL-SHOCK 4 wireless PS4 controller
  * Just a Picross controller
  * @author Antonio Campos
  */
@@ -60,6 +55,9 @@ public class Controller implements EventHandler<ActionEvent> {
         daModel = tModel;
     }
 
+    /**
+     * Start method for the app
+     */
     public void startApp(){
         daView.start(mainStage);
     }
@@ -72,8 +70,7 @@ public class Controller implements EventHandler<ActionEvent> {
     public void handle(ActionEvent actionEvent) {
         if(actionEvent!=null) {
             Object source = actionEvent.getSource();
-            if (source instanceof MenuItem) {
-                MenuItem menuItem = (MenuItem) source;
+            if (source instanceof MenuItem menuItem) {
                 String id = menuItem.getId();
 
                 switch (id) {
@@ -113,13 +110,12 @@ public class Controller implements EventHandler<ActionEvent> {
                         break;
                     case "SendData":
                         break;
-                    case "RecieveGame":
+                    case "ReceiveGame":
                         break;
                     case "surprise":
                         daView.surprise();
                         break;
                     case "Close":
-                        System.out.println("Exit?");
                         mainStage.close();
                         System.exit(0);
                         break;
