@@ -68,11 +68,13 @@ public class Controller implements EventHandler<ActionEvent> {
      */
     @Override
     public void handle(ActionEvent actionEvent) {
+        //Check if action calling method is null
         if(actionEvent!=null) {
+            //Gets source calling action event and turns it into a menu item in case valid
             Object source = actionEvent.getSource();
             if (source instanceof MenuItem menuItem) {
+                //Gets id of menuItem and uses it for switch statement
                 String id = menuItem.getId();
-
                 switch (id) {
                     case "Spanish":
                         daModel.updateLanguage(2);
@@ -81,11 +83,10 @@ public class Controller implements EventHandler<ActionEvent> {
                         daModel.updateLanguage(1);
                         break;
                     case "Design":
-                        System.out.println("Design");
                         daModel.design();
                         break;
                     case "NewGame":
-                        System.out.println("New Game");
+                        //Calls new game with random value in order to create new random game, then updates UI
                         daModel.newGame(true);
                         daView.updateStage(mainStage, false);
                         break;
@@ -96,7 +97,7 @@ public class Controller implements EventHandler<ActionEvent> {
                         daView.about();
                         break;
                     case "Load":
-                        System.out.println("Load Game");
+                        //Calls new game with load value in order to load game from disk, then updates UI
                         daModel.newGame(false);
                         daView.updateStage(mainStage, false);
                         break;
@@ -107,34 +108,27 @@ public class Controller implements EventHandler<ActionEvent> {
                         daView.colorPick();
                         break;
                     case "SendGame":
+                        sendGame();
                         break;
                     case "SendData":
+                        sendData();
                         break;
                     case "ReceiveGame":
+                        loadGame();
+                        break;
+                    case "NUKETURKEY":
+
                         break;
                     case "surprise":
                         daView.surprise();
                         break;
                     case "Close":
+                        //Shuts everything down and closes application
                         mainStage.close();
                         System.exit(0);
                         break;
                 }
             }
-        }
-    }
-
-    /**
-     * Method for choosing type of new game, random or designed game
-     * @param s selected type of game
-     */
-    public void handleGameMode(String s){
-        if(s.equalsIgnoreCase("Random")){
-            daModel.updateSolution(true);
-            boolean[][] sendGame = daModel.getCurrentSolution();
-            transformGame(sendGame);
-        }else{
-            daView.designSplash();
         }
     }
 
@@ -160,23 +154,6 @@ public class Controller implements EventHandler<ActionEvent> {
             }
         }
         dStage.hide();
-    }
-
-    /**
-     * Method for turning boolean array into string saved in client
-     * @param boolGame game configuration as 2d bool array
-     */
-    private void transformGame(boolean[][] boolGame){
-        StringBuilder game = new StringBuilder();
-        for (boolean[] row : boolGame) {
-            for (boolean cell : row) {
-                game.append(cell ? "1" : "0");
-            }
-            game.append(",");
-        }
-        game.deleteCharAt(game.length()-1);
-        String DAGAME = game.toString();
-        PicrossClient.setCurrentGame(DAGAME);
     }
 
     /**
@@ -228,11 +205,38 @@ public class Controller implements EventHandler<ActionEvent> {
         daModel.setScore(isSolution);
         daView.getScoreLabel().setText("\t" + Model.scoreTag + daModel.getScore());
         if(daModel.getScore()==daModel.maxPoints){
-            //Splash
+            daView.stopTimer();
+            daView.perfectGameSplash();
         }else if(daModel.hits==daModel.maxPoints){
-
+            daView.stopTimer();
+            daView.finishGameSplash();
         }
     }
+
+    /**
+     * Method for handling color changes made inside a color picker
+     * @param cpp color picker
+     * @param i index of the color being changed
+     */
+    public void handleColor(ColorPicker cpp, int i) {
+        Color currentColor = cpp.getValue();
+        switch (i) {
+            case 1 -> daModel.cell = currentColor;
+            case 2 -> daModel.rCell = currentColor;
+            case 3 -> daModel.wCell = currentColor;
+        }
+    }
+
+    /**
+     *Method for updating UI with new colors
+     */
+    public void updateColors() {
+        daModel.setRequiresUpdate(false);
+        handleReset(daView.getButArray(), daView.getLogArea());
+        daView.updateStage(mainStage,false);
+    }
+
+    /*------------ NETWORKING METHODS ----------------*/
 
     /**
      * Method for getting input of client information used for connecting to server
@@ -262,14 +266,6 @@ public class Controller implements EventHandler<ActionEvent> {
         daView.updateConnection();
     }
 
-    /**
-     * Method for closing connection and disconnecting from server
-     */
-    public void SHUTEVERYTHINGDOWNANDFLEETHECOUNTRY(){
-        PicrossClient.sendProtocol(0);
-        PicrossClient.disconnect();
-    }
-
     public void loadGame() {
         PicrossClient.setCurrentGame(PicrossServer.getCurrentGame());
         System.out.println(PicrossClient.getCurrentGame());
@@ -281,8 +277,6 @@ public class Controller implements EventHandler<ActionEvent> {
         PicrossClient.sendProtocol(3);
     }
 
-
-
     public void sendGame() {
         if(!PicrossClient.getConnectionStatus()){
             daView.sendError();
@@ -291,18 +285,35 @@ public class Controller implements EventHandler<ActionEvent> {
         }
     }
 
-    public void handleColor(ColorPicker cpp, int i) {
-        Color currentColor = cpp.getValue();
-        switch (i) {
-            case 1 -> daModel.cell = currentColor;
-            case 2 -> daModel.rCell = currentColor;
-            case 3 -> daModel.wCell = currentColor;
+    public void handleGameMode(String s){
+        if(s.equalsIgnoreCase("Random")){
+            daModel.updateSolution(true);
+            boolean[][] sendGame = daModel.getCurrentSolution();
+            transformGame(sendGame);
+        }else{
+            daView.designSplash();
         }
     }
 
-    public void updateColors() {
-        daModel.setRequiresUpdate(false);
-        handleReset(daView.getButArray(), daView.getLogArea());
-        daView.updateStage(mainStage,false);
+    private void transformGame(boolean[][] boolGame){
+        StringBuilder game = new StringBuilder();
+        for (boolean[] row : boolGame) {
+            for (boolean cell : row) {
+                game.append(cell ? "1" : "0");
+            }
+            game.append(",");
+        }
+        game.deleteCharAt(game.length()-1);
+        String DAGAME = game.toString();
+        PicrossClient.setCurrentGame(DAGAME);
     }
+
+    /**
+     * Method for closing connection and disconnecting from server
+     */
+    public void SHUTEVERYTHINGDOWNANDFLEETHECOUNTRY(){
+        PicrossClient.sendProtocol(0);
+        PicrossClient.disconnect();
+    }
+
 }

@@ -65,16 +65,6 @@ public class View extends Application {
     private Button[][] butArray;
 
     /**
-     * Private gridPane for the main grid
-     */
-    GridPane grid;
-
-    /**
-     * Private gridPane for the left grid
-     */
-    GridPane leftGrid;
-
-    /**
      * Private border pane used as the root of the scene for the main stage
      */
     private final BorderPane root = new BorderPane();
@@ -97,40 +87,12 @@ public class View extends Application {
 
     /*----------------Menu and menu items----------*/
 
-    //Main MenuBar
+    /**
+     * Main and only menu bar
+     */
     private final MenuBar mainMenu = new MenuBar();
 
-    Menu playMenu;
-    Menu helpMenu;
-
-    Menu languageMenu;
-
-    Menu networkMenu;
-    Menu connectMenu;
-
-    Menu exitMenu;
-
-    //Game Menu
-    Menu gameMenu;
-    //Play Menu
-    MenuItem newGame;
-    MenuItem loadGame;
-    MenuItem solution;
-    MenuItem design;
-    MenuItem spanish;
-    MenuItem english;
-    MenuItem color;
-    MenuItem about;
-    MenuItem sendGame;
-    MenuItem receiveGame;
-    MenuItem sendData;
-
-    MenuItem KBYE;
-    /*-------------NEW MENU ITEMS, WOW NEW MENU ITEMS--------------*/
-    MenuItem client;
-    MenuItem surprise;
-    //Exit Menu
-    MenuItem close;
+    private Menu connectMenu;
 
     private Timeline timer;
 
@@ -155,94 +117,71 @@ public class View extends Application {
     }
 
     /**
-     * Method for setting the time
-     * @param nTime new time
-     */
-    public void setTime(int nTime){
-        thaModel.time = nTime;
-    }
-
-
-    /**
-     * Method to initialize and start the timer.
-     */
-    private void startTimer() {
-        timer = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
-            // Code to update the UI every second
-            currentTime++;
-            timerLabel.setText("\t" + Model.timeTag + currentTime);
-        }));
-        timer.setCycleCount(Timeline.INDEFINITE);
-        timer.play();
-    }
-
-    /**
      * Method for starting menu and setting it up
      * as well as adding action listener
      */
     public void startMenu(){
         //Inner menu
         ImageView nGameIcon = new ImageView(Model.newGameIcon);
-        playMenu = new Menu(Model.playTag,nGameIcon);
-        helpMenu = new Menu(Model.helpTag);
+        Menu playMenu = new Menu(Model.playTag, nGameIcon);
+        Menu helpMenu = new Menu(Model.helpTag);
         //Inner menu
         ImageView lnIcon = new ImageView(Model.languageIcon);
-        languageMenu = new Menu(Model.languageTag,lnIcon);
+        Menu languageMenu = new Menu(Model.languageTag, lnIcon);
         ImageView nwIcon = new ImageView(Model.networkIcon);
         //OMG NEW MENU
-        networkMenu = new Menu(Model.networkTag);
+        Menu networkMenu = new Menu(Model.networkTag);
         connectMenu = new Menu(Model.connectTag, nwIcon);
 
-        exitMenu = new Menu(Model.exitTag);
+        Menu exitMenu = new Menu(Model.exitTag);
 
-        //Game Menu
-        gameMenu = new Menu(Model.gameTag);
-        //Play
-        newGame = new MenuItem(Model.newGameTag, nGameIcon);
+        Menu gameMenu = new Menu(Model.gameTag);
+        MenuItem newGame = new MenuItem(Model.newGameTag, nGameIcon);
         newGame.setId("NewGame");
         newGame.addEventHandler(ActionEvent.ACTION, thaController);
         ImageView ldIcon = new ImageView(Model.loadIcon);
-        loadGame = new MenuItem(Model.loadTag,ldIcon);
+        MenuItem loadGame = new MenuItem(Model.loadTag, ldIcon);
         loadGame.setId("Load");
         loadGame.addEventHandler(ActionEvent.ACTION, thaController);
         playMenu.getItems().addAll(newGame, loadGame);
         ImageView slIcon = new ImageView(Model.solutionIcon);
-        solution = new MenuItem(Model.solutionTag, slIcon);
+        MenuItem solution = new MenuItem(Model.solutionTag, slIcon);
         solution.setId("Solution");
         solution.addEventHandler(ActionEvent.ACTION, thaController);
         ImageView dsIcon = new ImageView(Model.designIcon);
-        design = new MenuItem(Model.designTag, dsIcon);
+        MenuItem design = new MenuItem(Model.designTag, dsIcon);
         design.setId("Design");
         design.addEventHandler(ActionEvent.ACTION ,thaController);
         gameMenu.getItems().addAll(playMenu, solution, design);
         mainMenu.getMenus().add(gameMenu);
         //Options Menu
         ImageView spIcon = new ImageView(Model.spanishIcon);
-        spanish = new MenuItem(Model.spanishTag,spIcon);
+        MenuItem spanish = new MenuItem(Model.spanishTag, spIcon);
         spanish.setId("Spanish");
         spanish.addEventHandler(ActionEvent.ACTION ,thaController);
         ImageView enIcon = new ImageView(Model.englishIcon);
-        english = new MenuItem(Model.englishTag,enIcon);
+        MenuItem english = new MenuItem(Model.englishTag, enIcon);
         english.setId("English");
         english.addEventHandler(ActionEvent.ACTION ,thaController);
         languageMenu.getItems().addAll(english, spanish);
         ImageView colIcon = new ImageView(Model.colorIcon);
-        color = new MenuItem(Model.colorsTag, colIcon);
+        MenuItem color = new MenuItem(Model.colorsTag, colIcon);
         color.setId("Color");
         color.addEventHandler(ActionEvent.ACTION, thaController);
         ImageView abIcon = new ImageView(Model.aboutIcon);
-        about = new MenuItem(Model.aboutTag, abIcon);
+        MenuItem about = new MenuItem(Model.aboutTag, abIcon);
         about.setId("About");
         about.addEventHandler(ActionEvent.ACTION, thaController);
         helpMenu.getItems().addAll(languageMenu, color, about);
         mainMenu.getMenus().add(helpMenu);
         /*-------------NEW MENU ITEMS, WOW NEW MENU ITEMS--------------*/
         ImageView clIcon = new ImageView(Model.clientIcon);
-        client = new MenuItem(Model.clientTag,clIcon);
+        /*-------------NEW MENU ITEMS, WOW NEW MENU ITEMS--------------*/
+        MenuItem client = new MenuItem(Model.clientTag, clIcon);
         client.setId("Client");
         client.addEventHandler(ActionEvent.ACTION, thaController);
         ImageView knootknoot = new ImageView(Model.surpriseIcon);
-        surprise = new MenuItem(Model.KNOOTKNOOT, knootknoot);
+        MenuItem surprise = new MenuItem(Model.KNOOTKNOOT, knootknoot);
         surprise.setId("surprise");
         surprise.addEventHandler(ActionEvent.ACTION, thaController);
         networkMenu.getItems().addAll(connectMenu, client);
@@ -250,7 +189,7 @@ public class View extends Application {
         mainMenu.getMenus().add(networkMenu);
         //Exit Menu
         ImageView exIcon = new ImageView(Model.exitIcon);
-        close = new MenuItem(Model.closeTag, exIcon);
+        MenuItem close = new MenuItem(Model.closeTag, exIcon);
         close.setId("Close");
         close.addEventHandler(ActionEvent.ACTION, thaController);
         exitMenu.getItems().addAll(close);
@@ -260,7 +199,6 @@ public class View extends Application {
     /**
      * Method for returning the button array, updated throughout the model
      * @return 2d button array
-     * todo maybe needs use???? idk yet lol
      */
     public Button[][] getButArray(){
         return butArray;
@@ -319,7 +257,7 @@ public class View extends Application {
 
         confirmButton = new Button("Confirm");
 
-        confirmButton.setOnAction(e -> thaController.handleDesign(splashStage, (int) dimensionComboBox.getSelectionModel().getSelectedItem()));
+        confirmButton.setOnAction(e -> thaController.handleDesign(splashStage, dimensionComboBox.getSelectionModel().getSelectedItem()));
 
         root.getChildren().addAll(new Label("Select dimension:"), dimensionComboBox, confirmButton);
     }
@@ -369,8 +307,8 @@ public class View extends Application {
 
     /**
      * Method for generating the left grid used for displaying clues
-     * generated separetly from main grid since I don't know
-     * how to do this properly and I'm just stacking shit up
+     * generated separately from main grid since I don't know
+     * how to do this properly, and I'm just stacking shit up
      * as of this was tetris because I hate UI
      * @param clues string array containing clues for game rows
      * @return grid pane containing left grid
@@ -471,11 +409,10 @@ public class View extends Application {
     public void updateBoard(boolean random){
         if(thaModel.isRequiresUpdate()){
             thaModel.updateSolution(random);
-            thaModel.resetTime();
         }
         HBox gridBox = new HBox();
-        grid = new GridPane();
-        leftGrid = new GridPane();
+        GridPane grid = new GridPane();
+        GridPane leftGrid = new GridPane();
         grid = generateMGrid();
         leftGrid = generateLGrid(thaModel.getSideClues(thaModel.getCurrentSolution(), thaModel.getDimension()));
         gridBox.getChildren().addAll(leftGrid, grid);
@@ -511,10 +448,10 @@ public class View extends Application {
      */
     public void updateConnection() {
         PicrossClient.connect();
-        sendGame = new MenuItem(Model.sendGameTag);
-        receiveGame = new MenuItem(Model.receiveGameTag);
-        sendData = new MenuItem(Model.sendDataTag);
-        KBYE = new MenuItem("KBYE");
+        MenuItem sendGame = new MenuItem(Model.sendGameTag);
+        MenuItem receiveGame = new MenuItem(Model.receiveGameTag);
+        MenuItem sendData = new MenuItem(Model.sendDataTag);
+        MenuItem KBYE = new MenuItem("KBYE");
         sendGame.setId("SendGame");
         receiveGame.setId("ReceiveGame");
         sendData.setId("SendData");
@@ -620,7 +557,9 @@ public class View extends Application {
         //CSS styling for custom MINECRAFT font and adjusting sizes for different components
         scene.getStylesheets().add("fontstyle.css");
 
+        resetTimer();
         startTimer();
+
         //Final settings for stage and showing
         primaryStage.setResizable(false);
         primaryStage.sizeToScene();
@@ -659,7 +598,6 @@ public class View extends Application {
 
     /**
      * UNFINISHED METHOD, UNFINISHED DOCS
-     * @todo finish haha
      */
     public void portError() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -733,6 +671,49 @@ public class View extends Application {
         }
         thaModel.resetScore();
         logArea.appendText("\nSolution applied");
+    }
+
+    /**
+     * Method to initialize and start the timer.
+     */
+    private void startTimer() {
+        timer = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+            // Code to update the UI every second
+            currentTime++;
+            timerLabel.setText("\t" + Model.timeTag + currentTime);
+        }));
+        timer.setCycleCount(Timeline.INDEFINITE);
+        timer.play();
+    }
+
+    private void resetTimer(){
+        currentTime = 0;
+    }
+
+    public void stopTimer(){
+        if(timer!=null){
+            timer.stop();
+        }
+    }
+
+    public void perfectGameSplash(){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Game Completed");
+        alert.setHeaderText("Perfect Game completed");
+        alert.setContentText("Perfect Score " + thaModel.getScore() + "/" + thaModel.getMaxPoints()
+                + "\nCompletion Time: " + currentTime);
+
+        alert.showAndWait();
+    }
+
+    public void finishGameSplash(){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Game Completed");
+        alert.setHeaderText("Game completed");
+        alert.setContentText("Final Score " + thaModel.getScore() + "/" + thaModel.getMaxPoints()
+                + "\nCompletion Time: " + currentTime);
+
+        alert.showAndWait();
     }
 
 }

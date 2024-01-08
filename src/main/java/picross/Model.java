@@ -1,5 +1,9 @@
 package picross;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -8,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
+import javafx.util.Duration;
 
 import java.io.*;
 import java.util.Arrays;
@@ -413,8 +418,6 @@ public class Model {
 
     private boolean requiresUpdate = true;
 
-    protected int time;
-
     /**
      * Private boolean[][] for storing the solution
      */
@@ -550,6 +553,10 @@ public class Model {
      */
     public int getScore(){
         return score;
+    }
+
+    public int getMaxPoints(){
+        return maxPoints;
     }
 
     /**
@@ -689,7 +696,7 @@ public class Model {
             if(blockLength > 0){
                 colClue.append(blockLength).append(" ");
             }
-            if(colClue.length() == 0){
+            if(colClue.isEmpty()){
                 colClue.append(0); // If there are no blocks in the column, add a zero
             }
             sideClues[j] = colClue.toString().trim(); // trim the string to remove any leading/trailing spaces
@@ -721,7 +728,7 @@ public class Model {
             if(blockLength > 0){
                 rowClue.append(blockLength).append(" ");
             }
-            if(rowClue.length() == 0){
+            if(rowClue.isEmpty()){
                 rowClue.append(0); // If there are no blocks in the row, add a zero
             }
             topClues[i] = rowClue.toString().trim(); // trim the string to remove any leading/trailing spaces
@@ -798,6 +805,7 @@ public class Model {
     public void design(){
         anotherView.designSplash();
     }
+
 
 }//End of class
 
